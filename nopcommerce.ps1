@@ -46,16 +46,18 @@ az network private-endpoint create `
     --group-id blob `
     --connection-name blob-connection `
     -g $rg
-$interface_id=az network private-endpoint show --name stblobnop --query 'networkInterfaces[0].id' -o tsv -g $rg
+$interface_id=network private-endpoint show --name private-blob-endpoint --query 'networkInterfaces[0].id' -o tsv -g $rg
 $interface_ip=az resource show --ids "$interface_id" --query "properties.ipConfigurations[0].properties.privateIPAddress" -o tsv -g $rg
 az network private-dns record-set a create `
     --name stblobnop `
     --zone-name "privatelink.blob.core.windows.net"
+    -g $rg
 az network private-dns record-set a add-record `
     --record-set-name stblobnop `
     --zone-name "privatelink.blob.core.windows.net" `
     --ipv4-address $interface_ip
-Write-Host("Creating... Azure sql database server")
+    -g $rg
+Write-Host("Creating... Azure SQL database server")
 az sql server create -l southeastasia `
     -g $rg `
     -n sql-nopcommerce-demo `
